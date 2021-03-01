@@ -137,14 +137,27 @@
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.surface.columns }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.surface.rows }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.surface.pressures.toString() }}</td>
+                      <td class="border border-gray-300 px-4 py-2 font-medium">
+                        <span
+                          @mouseover="handleMapping(reading.surface.pressures, index + 1, indexR + 1)">View Map</span></td>
                     </tr>
                     </tbody>
                   </table>
+
+                </div>
+              </div>
+              <div class="px-4" v-show="map !== false">
+                <span class="text-xs font-medium text-gray-500 uppercase">Pressure Map Test {{ test }} Reading {{ reading }}</span>
+                <div class="bg-white border border-gray-300 w-34 table transform rotate-180">
+                  <div v-for="(item, index) in map" :key="index+'map'"
+                       :class="`bg-opacity-${item?`${item}0`:item}`"
+                       class="bg-red-600 float-left h-2 w-2">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
 
 
         </section>
@@ -164,7 +177,10 @@ export default {
   data() {
     return {
       data,
-      user: ""
+      user: "",
+      map: false,
+      test: "",
+      reading: ""
     };
   },
   directives: {
@@ -190,6 +206,11 @@ export default {
         return `(${item.toString()})`
       });
       return allItems.toString();
+    },
+    handleMapping(data, test, reading) {
+      this.map = data;
+      this.test = test;
+      this.reading = reading;
     }
   },
 
