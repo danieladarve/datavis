@@ -24,7 +24,7 @@
 
               <label for="assetsFieldHandle" class="block cursor-pointer">
                 <div>
-                  Start by addding some tests, you can either drag and drop files here or <span class="underline">click here</span> to select files
+                  Start by adding some tests, you can either drag and drop files here or <span class="underline">click here</span> to select files
                 </div>
               </label>
               <ul class="mt-4" v-if="this.filelist.length" v-cloak>
