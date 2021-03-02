@@ -17,6 +17,23 @@
           </div>
         </header>
         <section class=" flex flex-row flex-wrap items-center border-b border-solid border-gray-300 pb-4">
+          <div class="w-full">
+            <div class="p-12 bg-gray-100 border border-gray-300" @dragover="dragover" @dragleave="dragleave" @drop="drop">
+              <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
+                     class="w-px h-px opacity-0 overflow-hidden absolute" @change="onChange" ref="file" accept=".txt" />
+
+              <label for="assetsFieldHandle" class="block cursor-pointer">
+                <div>
+                  Start by addding some tests, you can either drag and drop files here or <span class="underline">click here</span> to select files
+                </div>
+              </label>
+              <ul class="mt-4" v-if="this.filelist.length" v-cloak>
+                <li class="text-sm p-1" v-for="(file, index) in filelist" :key="index+'r'">
+                  {{ file.name }}<button class="ml-2" type="button" @click="remove(filelist.indexOf(file))" title="Remove file">remove</button>
+                </li>
+              </ul>
+            </div>
+          </div>
           <div class="flex px-2 w-full pt-4">
             <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2">
               <span class="text-xs font-medium text-gray-500 uppercase">Name</span>
@@ -168,7 +185,6 @@
 
 <script>
 import './css/app.css';
-import data from "./assets/data.json";
 import { dragscroll } from 'vue-dragscroll';
 
 export default {
@@ -176,11 +192,13 @@ export default {
   components: {},
   data() {
     return {
-      data,
+      data: [],
       user: "",
       map: false,
       test: "",
-      reading: ""
+      reading: "",
+      filelist: [],
+      processed: []
     };
   },
   directives: {
@@ -198,6 +216,33 @@ export default {
     }
   },
   methods: {
+    getTestContents(file) {
+      let reader = new FileReader();
+
+      const callback = (e) => {
+        let test = {}
+        const pfile = e.target.result;
+        const allLines = pfile.split(/\r\n|\n/);
+        let tests = [];
+        allLines.forEach((line, index) => {
+          if(index <= 3){
+            let lineContent = line.split(" ");
+            test[lineContent[0].slice(0, -1)] = lineContent[1]
+          }else{
+            if(line.length){
+              tests.push(line);
+            }
+          }
+        });
+        const allTests = pfile.match(/(?:\{(?:(?:[^{}]+)|(?:[^{}]*\{[^{}]*\}[^{}]*)+)\})/gms)
+        test["Readings"] = allTests.map(item => JSON.parse(item));
+        this.data.push(test);
+        this.processed.push(file.name);
+      }
+      reader.onload = callback;
+      reader.readAsText(file);
+
+    },
     onlyUnique(value, index, self) {
       return self.indexOf(value) === index;
     },
@@ -211,9 +256,41 @@ export default {
       this.map = data;
       this.test = test;
       this.reading = reading;
+    },
+    onChange() {
+      this.filelist = [...this.$refs.file.files];
+      if(!this.filelist.length){ return []; }
+      this.filelist.forEach((file) => {
+        if(file.type === "text/plain" && !this.processed.indexOf(file.name) >= 0){
+          this.getTestContents(file);
+        }
+      })
+    },
+    remove(i) {
+      this.filelist.splice(i, 1);
+    },
+    dragover(event) {
+      event.preventDefault();
+      // Add some visual fluff to show the user can drop its files
+      if (!event.currentTarget.classList.contains('bg-green-300')) {
+        event.currentTarget.classList.remove('bg-gray-100');
+        event.currentTarget.classList.add('bg-green-300');
+      }
+    },
+    dragleave(event) {
+      // Clean up
+      event.currentTarget.classList.add('bg-gray-100');
+      event.currentTarget.classList.remove('bg-green-300');
+    },
+    drop(event) {
+      event.preventDefault();
+      this.$refs.file.files = event.dataTransfer.files;
+      this.onChange(); // Trigger the onChange event manually
+      // Clean up
+      event.currentTarget.classList.add('bg-gray-100');
+      event.currentTarget.classList.remove('bg-green-300');
     }
   },
-
 }
 </script>
 
