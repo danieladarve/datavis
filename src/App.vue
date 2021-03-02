@@ -164,19 +164,18 @@
                 </div>
               </div>
               <div class="px-4" v-show="map !== false">
-                <span class="text-xs font-medium text-gray-500 uppercase">Pressure Map Test {{ test }} Reading {{ reading }}</span>
-                <div class="bg-white border border-gray-300 w-34 table transform rotate-180">
-                  <div v-for="(item, index) in map" :key="index+'map'"
-                       :class="`bg-opacity-${item?`${item}0`:item}`"
-                       class="bg-red-600 float-left h-2 w-2">
+                <div class="sticky-bit">
+                  <span class="text-xs font-medium text-gray-500 uppercase">Pressure Map Test {{ test }} Reading {{ reading }}</span>
+                  <div class="bg-white border border-gray-300 w-34 table transform rotate-180">
+                    <div v-for="(item, index) in map" :key="index+'map'"
+                         :class="`bg-opacity-${item?`${item}0`:item}`"
+                         class="bg-red-600 float-left h-2 w-2">
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-
-
         </section>
       </div>
     </section>
@@ -290,6 +289,11 @@ export default {
       event.currentTarget.classList.add('bg-gray-100');
       event.currentTarget.classList.remove('bg-green-300');
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+
+    });
   },
 }
 </script>
