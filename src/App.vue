@@ -17,35 +17,69 @@
           </div>
         </header>
         <section class=" flex flex-row flex-wrap items-center border-b border-solid border-gray-300 pb-4">
-          <div class="w-full">
-            <div class="p-12 bg-gray-100 border border-gray-300" @dragover="dragover" @dragleave="dragleave" @drop="drop">
-              <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"
-                     class="w-px h-px opacity-0 overflow-hidden absolute" @change="onChange" ref="file" accept=".txt" />
+<!--          <div class="w-full">-->
+<!--            <div class="p-12 bg-gray-100 border border-gray-300" @dragover="dragover" @dragleave="dragleave" @drop="drop">-->
+<!--              <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"-->
+<!--                     class="w-px h-px opacity-0 overflow-hidden absolute" @change="onChange" ref="file" accept=".txt" />-->
 
-              <label for="assetsFieldHandle" class="block cursor-pointer">
-                <div>
-                  Start by adding some tests, you can either drag and drop files here or <span class="underline">click here</span> to select files
-                </div>
-              </label>
-              <ul class="mt-4" v-if="this.filelist.length" v-cloak>
-                <li class="text-sm p-1" v-for="(file, index) in filelist" :key="index+'r'">
-                  {{ file.name }}<button class="ml-2" type="button" @click="remove(filelist.indexOf(file))" title="Remove file">remove</button>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="flex px-2 w-full pt-4">
+<!--              <label for="assetsFieldHandle" class="block cursor-pointer">-->
+<!--                <div>-->
+<!--                  Start by adding some tests, you can either drag and drop files here or <span class="underline">click here</span> to select files-->
+<!--                </div>-->
+<!--              </label>-->
+<!--              <ul class="mt-4" v-if="this.filelist.length" v-cloak>-->
+<!--                <li class="text-sm p-1" v-for="(file, index) in filelist" :key="index+'r'">-->
+<!--                  {{ file.name }}<button class="ml-2" type="button" @click="remove(filelist.indexOf(file))" title="Remove file">remove</button>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--          </div>-->
+          <div class="flex px-2 w-full pt-4" v-if="testData !== false">
             <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2">
               <span class="text-xs font-medium text-gray-500 uppercase">Name</span>
               <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?user:"Please select a test" }}</span></div>
             </div>
             <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2">
               <span class="text-xs font-medium text-gray-500 uppercase">Height</span>
-              <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?testData[0].Height:"Please select a test" }}</span></div>
+              <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?testData.Height:"Please select a test" }}</span></div>
             </div>
             <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2">
               <span class="text-xs font-medium text-gray-500 uppercase">Weight</span>
-              <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?testData[0].Weight:"Please select a test" }}</span></div>
+              <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?testData.Weight:"Please select a test" }}</span></div>
+            </div>
+            <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2 text-center">
+              <span class="text-xs font-medium text-gray-500 uppercase">Biometrics WEIGHT</span>
+              <div class="py-2 flex items-center justify-center text-left">
+                <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ biometrics.minWeight }}</span>
+                  <span class="font-bold">MIN</span>
+                </span>
+                <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ biometrics.maxWeight }}</span>
+                  <span class="font-bold">MAX</span>
+                </span>
+                <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ biometrics.meanWeight }}</span>
+                  <span class="font-bold">MEAN</span>
+                </span>
+              </div>
+            </div>
+            <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2 text-center">
+              <span class="text-xs font-medium text-gray-500 uppercase">Biometrics Height</span>
+              <div class="py-2 flex items-center justify-center text-left">
+                <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ biometrics.minHeight }}</span>
+                  <span class="font-bold">MIN</span>
+                </span>
+                <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ biometrics.maxHeight }}</span>
+                  <span class="font-bold">MAX</span>
+                </span>
+                <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ biometrics.meanHeight }}</span>
+                  <span class="font-bold">MEAN</span>
+                </span>
+              </div>
             </div>
           </div>
           <div class="mt-4 w-full">
@@ -64,8 +98,8 @@
                       <th class="border border-gray-300 px-4 py-2">Targets</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item, index) in testData" :key="index+'r'">
-                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'reading'">
+                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
+                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.air.enabled? "True":"False" }}</td>
@@ -91,15 +125,15 @@
                       <th class="border border-gray-300 px-4 py-2">Weight Points</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item, index) in testData" :key="index+'r'">
-                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'reading'">
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.height }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.weight }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.weightmode }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium whitespace-nowrap">{{ getWeightPoints(reading.biometrics.weighpoints) }}</td>
-                    </tr>
+                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
+                      <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.height }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.weight }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.weightmode }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium whitespace-nowrap">{{ getWeightPoints(reading.biometrics.weighpoints) }}</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -120,8 +154,8 @@
                       <th class="border border-gray-300 px-4 py-2">Underage</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item, index) in testData" :key="index+'r'">
-                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'reading'">
+                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
+                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.configuration.average }}</td>
@@ -148,8 +182,8 @@
                       <th class="border border-gray-300 px-4 py-2">Pressures</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item, index) in testData" :key="index+'r'">
-                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'reading'">
+                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
+                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.surface.columns }}</td>
@@ -163,9 +197,9 @@
 
                 </div>
               </div>
-              <div class="px-4" v-show="map !== false">
-                <div class="sticky-bit">
-                  <span class="text-xs font-medium text-gray-500 uppercase">Pressure Map Test {{ test }} Reading {{ reading }}</span>
+              <div class="px-4 relative" v-show="map !== false">
+                <div class="fixed right-0 top-2/4 transform -translate-y-2/4">
+                  <span class="text-xs font-medium text-gray-500 uppercase">Pressure Map<br> Test {{ test }} Reading {{ reading }}</span>
                   <div class="bg-white border border-gray-300 w-34 table transform rotate-180">
                     <div v-for="(item, index) in map" :key="index+'map'"
                          :class="`bg-opacity-${item?`${item}0`:item}`"
@@ -184,6 +218,8 @@
 
 <script>
 import './css/app.css';
+import data from "./assets/data.json";
+import { min, max, mean, flattenDeep } from "lodash";
 import { dragscroll } from 'vue-dragscroll';
 
 export default {
@@ -210,8 +246,46 @@ export default {
       }).filter(this.onlyUnique) ||  [];
     },
     testData: function() {
-      if(this.user === ""){ return []; }
-      return this.data.filter(item => item.Name === this.user);
+      if(this.user === ""){ return false; }
+      const userData = this.data.filter(item => item.Name === this.user);
+      return {
+        Name: userData[0].Name,
+        Height: userData[0].Height,
+        Weight: userData[0].Weight,
+        Readings: userData.map(item => item.Readings),
+        data: flattenDeep(userData.map(item => item.Readings)),
+      };
+    },
+    biometrics: function() {
+      let results = {
+        meanHeight: "",
+        maxHeight: "",
+        minHeight: "",
+        meanWeight: "",
+        maxWeight: "",
+        minWeight: "",
+      };
+      if(!this.testData){
+        return results
+      }
+      const weight = this.testData.data.map(item => {
+        if(item.biometrics.weightmode === "air") {
+          return item.biometrics.weight;
+        }
+      })
+      const height = this.testData.data.map(item => {
+        if(item.biometrics.weightmode === "air") {
+          return item.biometrics.height;
+        }
+      })
+      results.minHeight = min(height);
+      results.maxHeight = max(height);
+      results.meanHeight = mean(height).toFixed(2);
+      results.minWeight = min(weight);
+      results.maxWeight = max(weight);
+      results.meanWeight = mean(weight).toFixed(2);
+
+      return results;
     }
   },
   methods: {
@@ -292,7 +366,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-
+      this.data = data;
     });
   },
 }

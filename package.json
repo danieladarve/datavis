@@ -13,7 +13,8 @@
     "lodash": "^4.17.21",
     "postcss": "^8.2.6",
     "vue": "^2.6.11",
-    "vue-dragscroll": "^2.1.3"
+    "vue-dragscroll": "^2.1.3",
+    "walkdir": "^0.4.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.0",
