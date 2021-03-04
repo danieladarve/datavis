@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <div id="app">
     <section class="container mx-auto">
       <div class="m-4 bg-white border border-gray-300 border-solid rounded shadow">
@@ -16,39 +16,60 @@
             </div>
           </div>
         </header>
-        <section class=" flex flex-row flex-wrap items-center border-b border-solid border-gray-300 pb-4">
-          <div class="w-full">
-            <div class="flex flex-wrap px-2 w-full pt-4" v-if="testData !== false">
-              <div
-                  v-for="(item, index) in biometrics.Left" :key="index+'bio'"
-                  class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 m-2 text-center"
-              >
-                <span class="text-sm font-medium text-gray-500 uppercase">{{ index }} Weight Stats @ {{ item.Weight }}kg</span>
-                <div class="py-2 flex items-center justify-center text-left">
-                <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ item.minWeight }}</span>
-                  <span class="font-bold">MIN</span>
-                </span>
-                  <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ item.maxWeight }}</span>
-                  <span class="font-bold">MAX</span>
-                </span>
-                  <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ item.meanWeight }}</span>
-                  <span class="font-bold">MEAN</span>
-                </span>
-                </div>
-              </div>
+        <section class="border-b border-solid border-gray-300 pb-4">
+          <div class="w-full px-4 text-center mt-6" v-if="testData !== false">
+            <div class="border border-solid border-gray-300 ">
               <div v-dragscroll class="overflow-x-scroll flex grab-bing ">
                 <div class="w-full mt-4 flex">
                   <div class="mx-2" v-for="(item, index) in biometrics.Left" :key="index+'biochart'">
                     <span class="text-sm font-medium text-gray-500 uppercase mx-auto table">{{ index }} Weight Chart @ {{ item.Weight }}kg</span>
-                    <LineChartComponent :item-data-left="item" :item-data-right="biometrics.Right[index]" />
+                    <LineChartComponent :item-data-left="item" :item-data-right="biometrics.Right[index]"/>
                   </div>
                 </div>
               </div>
               <div class="w-full mt-4 flex relative">
-                <AllLineChartComponent class="w-full " :all-item-data="biometrics" />
+                <AllLineChartComponent class="w-full " :all-item-data="biometrics"/>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap overflow-hidden w-full px-2" v-if="testData !== false">
+            <div
+                v-for="(item, index) in biometrics.Left" :key="index+'bio'"
+                class="w-full overflow-hidden mt-3 px-2 md:w-1/2 text-center"
+            >
+              <div class="border border-solid border-gray-300 ">
+
+                <span class="text-sm font-medium text-gray-500 uppercase">{{ index }} Stats @ {{ item.Weight }}kg</span>
+                <div class="py-2 flex items-center justify-center text-left">
+                    <div class="text-center flex flex-col mx-2">
+                      <span class="font-bold">MIN (L/R/OA)</span>
+                      <span class="text-lg leading-none">{{ item.minWeight }}</span>
+                      <span class="text-lg leading-none">{{ biometrics.Right[index].minWeight }}</span>
+                      <span class="text-lg leading-none">{{ biometrics[index].overallMin }}</span>
+                    </div>
+
+                  <div class="text-center flex flex-col mx-2">
+                    <span class="font-bold">MAX (L/R/OA)</span>
+                    <span class="text-base leading-none">{{ item.maxWeight }}</span>
+                    <span class="text-base leading-none">{{ biometrics.Right[index].maxWeight }}</span>
+                    <span class="text-base leading-none">{{ biometrics[index].overallMax }}</span>
+                  </div>
+
+
+                  <div class="text-center flex flex-col mx-2">
+                    <span class="font-bold">MEAN (L/R/OA)</span>
+                    <span class="text-base leading-none">{{ item.meanWeight }}</span>
+                    <span class="text-base leading-none">{{ biometrics.Right[index].meanWeight }}</span>
+                    <span class="text-base leading-none">{{ biometrics[index].overallMean }}</span>
+                  </div>
+
+                  <div class="text-center flex flex-col mx-2">
+                    <span class="font-bold">VARIANCE (L/R/OA)</span>
+                    <span class="text-base leading-none">{{ item.variance }}</span>
+                    <span class="text-base leading-none">{{ biometrics.Right[index].variance }}</span>
+                    <span class="text-base leading-none">{{ biometrics[index].overallVariance }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -375,7 +396,7 @@ import LineChartComponent from "./components/LineChartComponent"
 import AllLineChartComponent from "./components/AllLineChartComponent"
 import './css/app.css';
 import data from "./assets/data.json";
-import { groupBy, min, max, mean, flattenDeep, mapValues, debounce } from "lodash";
+import { groupBy, min, max, mean, union, flattenDeep, mapValues, forIn } from "lodash";
 import { dragscroll } from 'vue-dragscroll';
 
 export default {
@@ -436,20 +457,24 @@ export default {
       if(!this.testData){
         return results
       }
-      const weight = this.testData.data.map(item => {
-        if(item.biometrics.weightmode === "air") {
-          return item.biometrics.weight;
-        }
-      })
-      results.minWeight = min(weight);
-      results.maxWeight = max(weight);
-      results.meanWeight = mean(weight).toFixed(2);
+
       let left = groupBy(this.testData.Sides.Left, 'Name')
       left = this.getWeightVars(left)
       results.Left = left
       let right = groupBy(this.testData.Sides.Right, 'Name')
       right = this.getWeightVars(right)
       results.Right = right
+
+      // Calculate Overalls
+      forIn(left, (value, key) => {
+        let overalls = union(value.AllWeights, right[key].AllWeights);
+        results[key] = {
+          overallMin: min(overalls),
+          overallMax: max(overalls),
+          overallVariance: max(overalls) - min(overalls),
+          overallMean: mean(overalls).toFixed(2),
+        }
+      })
 
       return results;
     }
@@ -474,6 +499,7 @@ export default {
           AllWeights: allWeights,
           minWeight: min(allWeights),
           maxWeight: max(allWeights),
+          variance: max(allWeights) - min(allWeights),
           meanWeight: mean(allWeights).toFixed(2),
         }
       })

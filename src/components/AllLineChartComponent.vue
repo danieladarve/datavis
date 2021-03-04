@@ -1,6 +1,7 @@
 <script>
 import { forEach } from "lodash";
 import { Line } from 'vue-chartjs';
+
 export default {
   name: "AllLineChartComponent",
   extends: Line,
@@ -30,47 +31,52 @@ export default {
         '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF']
     }
   },
+  watch: {
+    allItemData() {
+      this.prepData();
+      this.$data._chart.update()
+    }
+  },
   mounted () {
-    // Labels Left + Right Side min max
-    // const minLabel = min([this.itemDataLeft.minWeight, this.itemDataRight.minWeight]);
-    // const maxLabel = max([this.itemDataLeft.maxWeight, this.itemDataRight.maxWeight]);
-
-    let max = 0;
-    const datasets = [];
-    let n = 0;
-    forEach(this.allItemData.Left, (value, key) => {
-      if(max < value.AllReadings.length){
-        max = value.AllReadings.length;
-      }
-      datasets.push({
-        label: `${key} Left Side`,
-        borderColor: this.colours[n],
-        backgroundColor: "transparent",
-        data: value.AllWeights
-      });
-      n = n + 1;
-      datasets.push({
-        label: `${key} Right Side`,
-        borderColor: this.colours[n],
-        backgroundColor: "transparent",
-        data: this.allItemData.Right[key].AllWeights
-      });
-      n = n + 1;
-    });
-
-    forEach(this.allItemData.Right, (value) => {
-      if(max < value.AllReadings.length){
-        max = value.AllReadings.length;
-      }
-    })
-    this.data.labels = this.range(0, max -1, 1);
-    this.data.datasets = datasets;
+    this.prepData();
     this.renderChart(this.data, { responsive: true, maintainAspectRatio: false });
   },
   methods: {
     range(start, end, step = 1) {
       const len = Math.floor((end - start) / step) + 1
       return Array(len).fill().map((_, idx) => start + (idx * step))
+    },
+    prepData() {
+      let max = 0;
+      const datasets = [];
+      let n = 0;
+      forEach(this.allItemData.Left, (value, key) => {
+        if(max < value.AllReadings.length){
+          max = value.AllReadings.length;
+        }
+        datasets.push({
+          label: `${key} LS`,
+          borderColor: this.colours[n],
+          backgroundColor: "transparent",
+          data: value.AllWeights
+        });
+        n = n + 1;
+        datasets.push({
+          label: `${key} RS`,
+          borderColor: this.colours[n],
+          backgroundColor: "transparent",
+          data: this.allItemData.Right[key].AllWeights
+        });
+        n = n + 1;
+      });
+
+      forEach(this.allItemData.Right, (value) => {
+        if(max < value.AllReadings.length){
+          max = value.AllReadings.length;
+        }
+      })
+      this.data.labels = this.range(0, max -1, 1);
+      this.data.datasets = datasets;
     }
   }
 }
