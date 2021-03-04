@@ -1,11 +1,16 @@
 const fs = require('fs');
+const path = require('path');
 const walk = require('walkdir');
 const testData = [];
+let folder = ""
 
-walk.sync('./src/assets/tests', (path, stat) => {
-  if(path.includes(".txt")){
+walk.sync('./src/assets/tests', (c, stat) => {
+  if(!c.includes(".txt")){
+    folder = path.parse(c).name;
+  }
+  if(c.includes(".txt")){
     let test = {}
-    const data = fs.readFileSync(path, 'utf8');
+    const data = fs.readFileSync(c, 'utf8');
     const allLines = data.split(/\r\n|\n/);
 
     allLines.forEach((line, index) => {
@@ -16,6 +21,9 @@ walk.sync('./src/assets/tests', (path, stat) => {
     });
 
     const allTests = data.match(/(?:\{(?:(?:[^{}]+)|(?:[^{}]*\{[^{}]*\}[^{}]*)+)\})/gms);
+    const location = (folder.replaceAll("-Left", "")).replaceAll("-Right","");
+    test["Location"] = location
+    test["Side"] = folder.replaceAll(`${location}-`, "")
     test["Readings"] = allTests.map(item => JSON.parse(item));
     testData.push(test);
   }

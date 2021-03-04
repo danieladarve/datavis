@@ -6,9 +6,9 @@
           <span>Profiler Test Data</span>
           <div class="w-full md:w-1/3 ml-auto">
             <div class="relative">
-              <select v-model="user" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
-                <option value="">Please select a test</option>
-                <option v-for="(item, index) in users" :key="index" :value="item">{{ item }}</option>
+              <select v-model="location" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                <option value="">Please select a location</option>
+                <option v-for="(item, index) in locations" :key="index" :value="item">{{ item }}</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -17,135 +17,190 @@
           </div>
         </header>
         <section class=" flex flex-row flex-wrap items-center border-b border-solid border-gray-300 pb-4">
-<!--          <div class="w-full">-->
-<!--            <div class="p-12 bg-gray-100 border border-gray-300" @dragover="dragover" @dragleave="dragleave" @drop="drop">-->
-<!--              <input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle"-->
-<!--                     class="w-px h-px opacity-0 overflow-hidden absolute" @change="onChange" ref="file" accept=".txt" />-->
-
-<!--              <label for="assetsFieldHandle" class="block cursor-pointer">-->
-<!--                <div>-->
-<!--                  Start by adding some tests, you can either drag and drop files here or <span class="underline">click here</span> to select files-->
-<!--                </div>-->
-<!--              </label>-->
-<!--              <ul class="mt-4" v-if="this.filelist.length" v-cloak>-->
-<!--                <li class="text-sm p-1" v-for="(file, index) in filelist" :key="index+'r'">-->
-<!--                  {{ file.name }}<button class="ml-2" type="button" @click="remove(filelist.indexOf(file))" title="Remove file">remove</button>-->
-<!--                </li>-->
-<!--              </ul>-->
-<!--            </div>-->
-<!--          </div>-->
-          <div class="flex px-2 w-full pt-4" v-if="testData !== false">
-            <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2">
-              <span class="text-xs font-medium text-gray-500 uppercase">Name</span>
-              <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?user:"Please select a test" }}</span></div>
-            </div>
-            <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2">
-              <span class="text-xs font-medium text-gray-500 uppercase">Height</span>
-              <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?testData.Height:"Please select a test" }}</span></div>
-            </div>
-            <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2">
-              <span class="text-xs font-medium text-gray-500 uppercase">Weight</span>
-              <div class="py-2 flex items-center justify-start text-left"><span class="text-lg">{{ user.length?testData.Weight:"Please select a test" }}</span></div>
-            </div>
-            <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2 text-center">
-              <span class="text-xs font-medium text-gray-500 uppercase">Biometrics WEIGHT</span>
-              <div class="py-2 flex items-center justify-center text-left">
+          <div class="w-full">
+            <div class="flex flex-wrap px-2 w-full pt-4" v-if="testData !== false">
+              <div
+                  v-for="(item, index) in biometrics.Left" :key="index+'bio'"
+                  class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 m-2 text-center"
+              >
+                <span class="text-sm font-medium text-gray-500 uppercase">{{ index }} Weight Stats @ {{ item.Weight }}kg</span>
+                <div class="py-2 flex items-center justify-center text-left">
                 <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ biometrics.minWeight }}</span>
+                  <span class="text-lg leading-none">{{ item.minWeight }}</span>
                   <span class="font-bold">MIN</span>
                 </span>
-                <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ biometrics.maxWeight }}</span>
+                  <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ item.maxWeight }}</span>
                   <span class="font-bold">MAX</span>
                 </span>
-                <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ biometrics.meanWeight }}</span>
+                  <span class="text-center flex flex-col mx-2">
+                  <span class="text-lg leading-none">{{ item.meanWeight }}</span>
                   <span class="font-bold">MEAN</span>
                 </span>
+                </div>
               </div>
-            </div>
-            <div class="p-4 w-full sm:w-1/2 lg:w-1/4 border border-solid border-gray-300 mx-2 text-center">
-              <span class="text-xs font-medium text-gray-500 uppercase">Biometrics Height</span>
-              <div class="py-2 flex items-center justify-center text-left">
-                <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ biometrics.minHeight }}</span>
-                  <span class="font-bold">MIN</span>
-                </span>
-                <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ biometrics.maxHeight }}</span>
-                  <span class="font-bold">MAX</span>
-                </span>
-                <span class="text-center flex flex-col mx-2">
-                  <span class="text-lg leading-none">{{ biometrics.meanHeight }}</span>
-                  <span class="font-bold">MEAN</span>
-                </span>
+              <div v-dragscroll class="overflow-x-scroll flex grab-bing ">
+                <div class="w-full mt-4 flex">
+                  <div class="mx-2" v-for="(item, index) in biometrics.Left" :key="index+'biochart'">
+                    <span class="text-sm font-medium text-gray-500 uppercase mx-auto table">{{ index }} Weight Chart @ {{ item.Weight }}kg</span>
+                    <LineChartComponent :item-data-left="item" :item-data-right="biometrics.Right[index]" />
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-4 flex relative">
+                <AllLineChartComponent class="w-full " :all-item-data="biometrics" />
               </div>
             </div>
           </div>
-          <div class="mt-4 w-full">
+
+          <div class="mt-4 w-full" v-if="testData !== false">
             <div v-dragscroll class="overflow-x-scroll flex grab-bing ">
               <div class="px-4">
-                <span class="text-xs font-medium text-gray-500 uppercase">AIR</span>
                 <div>
                   <table class="table-auto">
                     <thead>
                     <tr class="text-sm uppercase text-left">
-                      <th class="border border-gray-300 px-4 py-2">Test #</th>
-                      <th class="border border-gray-300 px-4 py-2">Reading #</th>
+                      <th colspan="7" class="py-2"><span class="text-xs font-medium text-gray-500 uppercase">AIR</span></th>
+                    </tr>
+                    <tr class="text-sm uppercase text-left">
+                      <th class="border border-gray-300 px-4 py-2">T#</th>
+                      <th class="border border-gray-300 px-4 py-2">R#</th>
+                      <th class="border border-gray-300 px-4 py-2">Name</th>
                       <th class="border border-gray-300 px-4 py-2">Enabled</th>
                       <th class="border border-gray-300 px-4 py-2">Flows</th>
                       <th class="border border-gray-300 px-4 py-2">Pressures</th>
                       <th class="border border-gray-300 px-4 py-2">Targets</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
-                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.air.enabled? "True":"False" }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.air.flows.toString() }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.air.pressures.toString() }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.air.targets.toString() }}</td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="px-4">
-                <span class="text-xs font-medium text-gray-500 uppercase">BIOMETRICS</span>
-                <div>
-                  <table class="table-auto">
-                    <thead>
-                    <tr class="text-sm uppercase text-left">
-                      <th class="border border-gray-300 px-4 py-2">Test #</th>
-                      <th class="border border-gray-300 px-4 py-2">Reading #</th>
-                      <th class="border border-gray-300 px-4 py-2">Height</th>
-                      <th class="border border-gray-300 px-4 py-2">Weight</th>
-                      <th class="border border-gray-300 px-4 py-2">Weight Mode</th>
-                      <th class="border border-gray-300 px-4 py-2">Weight Points</th>
-                    </tr>
-                    </thead>
-                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
-                      <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
+                    <tbody v-for="(item, index) in testData.Sides.Left" :key="index+'rair'">
+                      <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'readingair'">
                         <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
                         <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
-                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.height }}</td>
-                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.weight }}</td>
-                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.biometrics.weightmode }}</td>
-                        <td class="border border-gray-300 px-4 py-2 font-medium whitespace-nowrap">{{ getWeightPoints(reading.biometrics.weighpoints) }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium whitespace-nowrap">{{ item.Name }} {{ testData.Sides.Right[index].Name }}</td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 py-2">{{ reading.air.enabled? "Y":"N" }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].air.enabled? "Y":"N" }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 py-2">{{ reading.air.flows.toString() }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].air.flows.toString() }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 py-2">{{ reading.air.pressures.toString() }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].air.pressures.toString() }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 ">{{ reading.air.targets.toString() }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].air.targets.toString() }}</td>
+                            </tr>
+                          </table>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
               <div class="px-4">
-                <span class="text-xs font-medium text-gray-500 uppercase">Configuration</span>
+
                 <div>
-                  <table class="table-auto  text-left">
+                  <table class="table-auto">
                     <thead>
                     <tr class="text-sm uppercase text-left">
-                      <th class="border border-gray-300 px-4 py-2">Test #</th>
-                      <th class="border border-gray-300 px-4 py-2">Reading #</th>
+                      <th colspan="7" class="py-2"><span class="text-xs font-medium text-gray-500 uppercase">BIOMETRICS</span></th>
+                    </tr>
+                    <tr class="text-sm uppercase text-left">
+                      <th class="border border-gray-300 px-4 py-2">T#</th>
+                      <th class="border border-gray-300 px-4 py-2">R#</th>
+                      <th class="border border-gray-300 px-4 py-2">Name</th>
+                      <th class="border border-gray-300 px-4 py-2">Height</th>
+                      <th class="border border-gray-300 px-4 py-2">Weight</th>
+                      <th class="border border-gray-300 px-4 py-2">Weight Mode</th>
+                      <th class="border border-gray-300 px-4 py-2">Weight Points</th>
+                    </tr>
+                    </thead>
+                    <tbody v-for="(item, index) in testData.Sides.Left" :key="index+'r'">
+                      <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'reading'">
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
+                        <td class="border border-gray-300 px-4 py-2 font-medium">{{ item.Name }} {{ testData.Sides.Right[index].Name }}</td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 py-2">{{ reading.biometrics.height }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].biometrics.height }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 py-2">{{ reading.biometrics.weight }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].biometrics.weight }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 py-2">{{ reading.biometrics.weightmode }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].biometrics.weightmode }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td class="border border-gray-300 font-medium">
+                          <table>
+                            <tr>
+                              <td class="px-4 py-2 border-r border-gray-300">L</td>
+                              <td class="px-4 ">{{ getWeightPoints(reading.biometrics.weighpoints) }}</td>
+                              <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                              <td class="px-4 py-2">{{ getWeightPoints(testData.Sides.Right[index].Readings[indexR].biometrics.weighpoints) }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="px-4">
+                <div>
+                  <table class="table-auto">
+                    <thead>
+                    <tr class="text-sm uppercase text-left">
+                      <th colspan="9" class="py-2"><span class="text-xs font-medium text-gray-500 uppercase">CONFIGURATION</span></th>
+                    </tr>
+                    <tr class="text-sm uppercase text-left">
+                      <th class="border border-gray-300 px-4 py-2">T#</th>
+                      <th class="border border-gray-300 px-4 py-2">R#</th>
+                      <th class="border border-gray-300 px-4 py-2">Name</th>
                       <th class="border border-gray-300 px-4 py-2">Average</th>
                       <th class="border border-gray-300 px-4 py-2">Interval</th>
                       <th class="border border-gray-300 px-4 py-2">Overage</th>
@@ -154,56 +209,155 @@
                       <th class="border border-gray-300 px-4 py-2">Underage</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
-                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
+                    <tbody v-for="(item, index) in testData.Sides.Left" :key="index+'rconfig'">
+                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'readingconfig'">
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.configuration.average }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.configuration.interval }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.configuration.overage }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.configuration.timeout }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.configuration.tolerance }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.configuration.underage }}</td>
+                      <td class="border border-gray-300 px-4 py-2 font-medium whitespace-nowrap">{{ item.Name }} {{ testData.Sides.Right[index].Name }}</td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.configuration.average }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].configuration.average }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.configuration.interval }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].configuration.interval }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.configuration.overage }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].configuration.overage }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.configuration.timeout }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].configuration.timeout }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.configuration.tolerance }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].configuration.tolerance }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.configuration.underage }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].configuration.underage }}</td>
+                          </tr>
+                        </table>
+                      </td>
                     </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
               <div class="px-4">
-                <span class="text-xs font-medium text-gray-500 uppercase">Surface</span>
                 <div>
-                  <table class="table-auto ">
+                  <table class="table-auto">
                     <thead>
-                    <tr class="text-sm uppercase text-left">
-                      <th class="border border-gray-300 px-4 py-2">Test #</th>
-                      <th class="border border-gray-300 px-4 py-2">Reading #</th>
-                      <th class="border border-gray-300 px-4 py-2">Columns</th>
-                      <th class="border border-gray-300 px-4 py-2">Rows</th>
-                      <th class="border border-gray-300 px-4 py-2">Pressures</th>
-                    </tr>
+                      <tr class="text-sm uppercase text-left">
+                        <th colspan="6" class="py-2"><span class="text-xs font-medium text-gray-500 uppercase">SURFACE</span></th>
+                      </tr>
+                      <tr class="text-sm uppercase text-left">
+                        <th class="border border-gray-300 px-4 py-2">T#</th>
+                        <th class="border border-gray-300 px-4 py-2">R#</th>
+                        <th class="border border-gray-300 px-4 py-2">Name</th>
+                        <th class="border border-gray-300 px-4 py-2">Columns</th>
+                        <th class="border border-gray-300 px-4 py-2">Rows</th>
+                        <th class="border border-gray-300 px-4 py-2">Pressures</th>
+                      </tr>
                     </thead>
-                    <tbody v-for="(item, index) in testData.Readings" :key="index+'r'">
-                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item" :key="indexR+'reading'">
+                    <tbody v-for="(item, index) in testData.Sides.Left" :key="index+'rsurface'">
+                    <tr class="text-gray-500 text-sm" v-for="(reading, indexR) in item.Readings" :key="indexR+'readingsurface'">
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ index + 1 }}</td>
                       <td class="border border-gray-300 px-4 py-2 font-medium">{{ indexR + 1 }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.surface.columns }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ reading.surface.rows }}</td>
-                      <td class="border border-gray-300 px-4 py-2 font-medium">
-                        <span
-                          @mouseover="handleMapping(reading.surface.pressures, index + 1, indexR + 1)">View Map</span></td>
+                      <td class="border border-gray-300 px-4 py-2 font-medium">{{ item.Name }} {{ testData.Sides.Right[index].Name }}</td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.surface.columns }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].surface.columns }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2">{{ reading.surface.rows }}</td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2">{{ testData.Sides.Right[index].Readings[indexR].surface.rows }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="border border-gray-300 font-medium">
+                        <table>
+                          <tr>
+                            <td class="px-4 py-2 border-r border-gray-300">L</td>
+                            <td class="px-4 py-2"><span @mouseover="handleMapping(reading.surface.pressures, index + 1, indexR + 1, 'L')">View Map</span></td>
+                            <td class="px-4 py-2 border-r border-l border-gray-300">R</td>
+                            <td class="px-4 py-2"><span @mouseover="handleMapping(testData.Sides.Right[index].Readings[indexR].surface.pressures, index + 1, indexR + 1, 'R')">View Map</span></td>
+                          </tr>
+                        </table>
+                      </td>
                     </tr>
                     </tbody>
                   </table>
-
                 </div>
               </div>
-              <div class="px-4 relative" v-show="map !== false">
-                <div class="fixed right-0 top-2/4 transform -translate-y-2/4">
-                  <span class="text-xs font-medium text-gray-500 uppercase">Pressure Map<br> Test {{ test }} Reading {{ reading }}</span>
-                  <div class="bg-white border border-gray-300 w-34 table transform rotate-180">
-                    <div v-for="(item, index) in map" :key="index+'map'"
-                         :class="`bg-opacity-${item?`${item}0`:item}`"
-                         class="bg-red-600 float-left h-2 w-2">
+              <div ref="parentContainer" class="px-4">
+                <div class="mt-2 relative">
+                  <span class="text-xs font-medium text-gray-500 uppercase whitespace-no-wrap block w-full">Pressure Maps</span>
+                  <div ref="mapsContainer" class="flex mt-3 absolute transition duration-500 ease-in-out left-0">
+                    <div class="mx-2" v-if="maps.L.map !== false">
+                      <span class="text-xs font-medium text-gray-500 uppercase block">LEFT SIDE</span>
+                      <span class="text-xs font-medium text-gray-500 uppercase">Test {{ maps.L.test }} Reading {{ maps.L.reading }}</span>
+                      <div class="bg-white border border-gray-300 w-34 table transform rotate-180">
+                        <div v-for="(item, index) in maps.L.map" :key="index+'mapL'"
+                             :class="`bg-opacity-${item?`${item}0`:item}`"
+                             class="bg-red-600 float-left h-2 w-2">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mx-2 mr-6" v-if="maps.R.map !== false">
+                      <span class="text-xs font-medium text-gray-500 uppercase block">RIGHT SIDE</span>
+                      <span class="text-xs font-medium text-gray-500 uppercase">Test {{ maps.R.test }} Reading {{ maps.R.reading }}</span>
+                      <div class="bg-white border border-gray-300 w-34 table transform rotate-180">
+                        <div v-for="(item, index) in maps.R.map" :key="index+'mapR'"
+                             :class="`bg-opacity-${item?`${item}0`:item}`"
+                             class="bg-red-600 float-left h-2 w-2">
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -217,50 +371,64 @@
 </template>
 
 <script>
+import LineChartComponent from "./components/LineChartComponent"
+import AllLineChartComponent from "./components/AllLineChartComponent"
 import './css/app.css';
 import data from "./assets/data.json";
-import { min, max, mean, flattenDeep } from "lodash";
+import { groupBy, min, max, mean, flattenDeep, mapValues, debounce } from "lodash";
 import { dragscroll } from 'vue-dragscroll';
 
 export default {
   name: 'App',
-  components: {},
+  components: {
+    LineChartComponent,
+    AllLineChartComponent
+  },
   data() {
     return {
       data: [],
       user: "",
+      location: "",
       map: false,
-      test: "",
-      reading: "",
-      filelist: [],
-      processed: []
+      maps: {
+        R: {
+          test: "",
+          reading: "",
+          side: "",
+          map: false
+        },
+        L: {
+          test: "",
+          reading: "",
+          side: "",
+          map: false
+        },
+      },
     };
   },
   directives: {
     'dragscroll': dragscroll
   },
   computed: {
-    users: function() {
+    locations: function() {
       return this.data.map(item => {
-        return item.Name;
+        return item.Location;
       }).filter(this.onlyUnique) ||  [];
     },
     testData: function() {
-      if(this.user === ""){ return false; }
-      const userData = this.data.filter(item => item.Name === this.user);
+      if(this.location === ""){ return false; }
+      const userData = this.data.filter(item => item.Location === this.location);
       return {
         Name: userData[0].Name,
         Height: userData[0].Height,
         Weight: userData[0].Weight,
         Readings: userData.map(item => item.Readings),
         data: flattenDeep(userData.map(item => item.Readings)),
+        Sides: groupBy(userData, 'Side')
       };
     },
     biometrics: function() {
       let results = {
-        meanHeight: "",
-        maxHeight: "",
-        minHeight: "",
         meanWeight: "",
         maxWeight: "",
         minWeight: "",
@@ -273,48 +441,42 @@ export default {
           return item.biometrics.weight;
         }
       })
-      const height = this.testData.data.map(item => {
-        if(item.biometrics.weightmode === "air") {
-          return item.biometrics.height;
-        }
-      })
-      results.minHeight = min(height);
-      results.maxHeight = max(height);
-      results.meanHeight = mean(height).toFixed(2);
       results.minWeight = min(weight);
       results.maxWeight = max(weight);
       results.meanWeight = mean(weight).toFixed(2);
+      let left = groupBy(this.testData.Sides.Left, 'Name')
+      left = this.getWeightVars(left)
+      results.Left = left
+      let right = groupBy(this.testData.Sides.Right, 'Name')
+      right = this.getWeightVars(right)
+      results.Right = right
 
       return results;
     }
   },
   methods: {
-    getTestContents(file) {
-      let reader = new FileReader();
-
-      const callback = (e) => {
-        let test = {}
-        const pfile = e.target.result;
-        const allLines = pfile.split(/\r\n|\n/);
-        let tests = [];
-        allLines.forEach((line, index) => {
-          if(index <= 3){
-            let lineContent = line.split(" ");
-            test[lineContent[0].slice(0, -1)] = lineContent[1]
-          }else{
-            if(line.length){
-              tests.push(line);
-            }
+    getWeightVars(weights) {
+      return mapValues(weights, (o) => {
+        const readings = o.map(item => item.Readings);
+        const allReadings = flattenDeep(readings);
+        const allWeights = allReadings.map(weight => {
+          if(weight.biometrics.weightmode === "air") {
+            return weight.biometrics.weight;
           }
-        });
-        const allTests = pfile.match(/(?:\{(?:(?:[^{}]+)|(?:[^{}]*\{[^{}]*\}[^{}]*)+)\})/gms)
-        test["Readings"] = allTests.map(item => JSON.parse(item));
-        this.data.push(test);
-        this.processed.push(file.name);
-      }
-      reader.onload = callback;
-      reader.readAsText(file);
-
+        })
+        return {
+          Name: o[0].Name,
+          Height: o[0].Height,
+          Weight: o[0].Weight,
+          Side: o[0].Side,
+          Readings: readings,
+          AllReadings: allReadings,
+          AllWeights: allWeights,
+          minWeight: min(allWeights),
+          maxWeight: max(allWeights),
+          meanWeight: mean(allWeights).toFixed(2),
+        }
+      })
     },
     onlyUnique(value, index, self) {
       return self.indexOf(value) === index;
@@ -325,50 +487,21 @@ export default {
       });
       return allItems.toString();
     },
-    handleMapping(data, test, reading) {
-      this.map = data;
-      this.test = test;
-      this.reading = reading;
-    },
-    onChange() {
-      this.filelist = [...this.$refs.file.files];
-      if(!this.filelist.length){ return []; }
-      this.filelist.forEach((file) => {
-        if(file.type === "text/plain" && !this.processed.indexOf(file.name) >= 0){
-          this.getTestContents(file);
-        }
-      })
-    },
-    remove(i) {
-      this.filelist.splice(i, 1);
-    },
-    dragover(event) {
-      event.preventDefault();
-      // Add some visual fluff to show the user can drop its files
-      if (!event.currentTarget.classList.contains('bg-green-300')) {
-        event.currentTarget.classList.remove('bg-gray-100');
-        event.currentTarget.classList.add('bg-green-300');
+    handleMapping(data, test, reading, side) {
+      this.maps[side] = {
+        test: test,
+        reading: reading,
+        side: side,
+        map: data
       }
     },
-    dragleave(event) {
-      // Clean up
-      event.currentTarget.classList.add('bg-gray-100');
-      event.currentTarget.classList.remove('bg-green-300');
-    },
-    drop(event) {
-      event.preventDefault();
-      this.$refs.file.files = event.dataTransfer.files;
-      this.onChange(); // Trigger the onChange event manually
-      // Clean up
-      event.currentTarget.classList.add('bg-gray-100');
-      event.currentTarget.classList.remove('bg-green-300');
-    }
   },
   mounted() {
     this.$nextTick(() => {
       this.data = data;
     });
   },
+
 }
 </script>
 
@@ -378,5 +511,9 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+
+td {
+  @apply whitespace-nowrap;
 }
 </style>
