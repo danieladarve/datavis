@@ -21,9 +21,10 @@ walk.sync('./src/assets/tests', (c, stat) => {
     });
 
     const allTests = data.match(/(?:\{(?:(?:[^{}]+)|(?:[^{}]*\{[^{}]*\}[^{}]*)+)\})/gms);
-    const location = (folder.replaceAll("-Left", "")).replaceAll("-Right","");
+    posNumbString.replace(/-/g, 'i');
+    const location = (folder.replace(/-Left/g, "")).replace(/-Right/,"");
     test["Location"] = location
-    test["Side"] = folder.replaceAll(`${location}-`, "")
+    test["Side"] = folder.replace(`${location}-`, "")
     test["Readings"] = allTests.map(item => JSON.parse(item));
     testData.push(test);
   }
