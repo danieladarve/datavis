@@ -21,7 +21,6 @@ walk.sync('./src/assets/tests', (c, stat) => {
     });
 
     const allTests = data.match(/(?:\{(?:(?:[^{}]+)|(?:[^{}]*\{[^{}]*\}[^{}]*)+)\})/gms);
-    posNumbString.replace(/-/g, 'i');
     const location = (folder.replace(/-Left/g, "")).replace(/-Right/,"");
     test["Location"] = location
     test["Side"] = folder.replace(`${location}-`, "")
